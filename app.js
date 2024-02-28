@@ -2,27 +2,74 @@ const cursor = document.querySelector('.cursor');
 const circles = [...document.querySelectorAll('.circle')];
 const scoreEl = document.querySelector('#score span');
 const timerDisplay = document.querySelector('#timeleft span');
-
 let scoreValue = 0;
 let timeLeft = 60; // Initial time in seconds
 
 function updateTimer() {
     timerDisplay.textContent = timeLeft;
     if (timeLeft <= 0) {
-        console.log("Final score:", scoreValue); // Log the final score
         clearTimeout(timer);
-        if (scoreValue > 300) {
-            alert("YOU WIN!");
-        } else if (scoreValue >= 100 && scoreValue <= 290) {
-            alert("YOU COULD DO BETTER");
-        } else {
-            alert("YOU LOSE!");
-        }
+        endGame();
     } else {
         timeLeft--;
-        setTimeout(updateTimer, 1000); // Update timer every second (1000 milliseconds)
+        timer = setTimeout(updateTimer, 1000);
     }
 }
+
+function endGame() {
+    if (scoreValue > 150) {
+        displayMessage("YOU WIN!");
+    } else if (scoreValue >= 80 && scoreValue <= 140) {
+        displayMessage("YOU COULD DO BETTER");
+    } else {
+        displayMessage("YOU LOSE!");
+    }
+}
+
+function displayMessage(message) {
+    const messageElement = document.createElement('div');
+    messageElement.textContent = message;
+    messageElement.style.position = 'absolute';
+    messageElement.style.top = '50%';
+    messageElement.style.left = '50%';
+    messageElement.style.transform = 'translate(-50%, -50%)';
+    messageElement.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    messageElement.style.color = 'white';
+    messageElement.style.fontWeight = 'bold';
+    messageElement.style.fontSize = '24px';
+    messageElement.style.padding = '20px';
+    messageElement.style.borderRadius = '10px';
+    messageElement.style.textAlign = 'center';
+    document.body.appendChild(messageElement);
+
+    const restartButton = document.createElement('button');
+    restartButton.textContent = 'Restart';
+    restartButton.style.display = 'block';
+    restartButton.style.marginTop = '20px';
+    restartButton.style.color = 'white'; // Button text color
+    restartButton.style.border = 'none'; // Remove button border
+    restartButton.style.borderRadius = '5px'; // Button border radius
+    restartButton.style.cursor = 'pointer'; // Change cursor to pointer on hover
+    restartButton.style.fontSize = '20px'; // Increase font size
+    restartButton.style.padding = '15px 30px'; // Increase padding
+    restartButton.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    restartButton.addEventListener('click', function() {
+        document.body.removeChild(messageElement);
+        document.body.removeChild(restartButton);
+        startGame();
+    });
+    document.body.appendChild(restartButton);
+}
+
+
+function startGame() {
+    scoreValue = 0;
+    scoreEl.textContent = scoreValue;
+    timeLeft = 60;
+    updateTimer();
+}
+
+startGame();
 
 function run() {
     const i = Math.floor(Math.random() * circles.length);
